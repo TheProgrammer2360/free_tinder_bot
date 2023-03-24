@@ -51,6 +51,14 @@ class TinderBot:
             # when the button is now present on screen, get hold of it and click it
             login_button = self.driver.find_element(By.XPATH, xpath)
             login_button.click()
+
+        # xpath for the login with facebook button
+        xpath = "/html/body/div[2]/main/div/div/div[1]/div/div/div[3]/span/div[2]/button"
+        # wait for 5 seconds for the Google button to disappear and return
+        time.sleep(5)
+        # get the login with facebook button and click it
+        login_button = self.driver.find_element(By.XPATH, xpath)
+        login_button.click()
         time.sleep(3600)
 
     def swiper(self, total: int, like: int, dislike: int) -> None:
