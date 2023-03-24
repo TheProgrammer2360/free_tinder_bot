@@ -28,3 +28,8 @@ class TinderBot:
     def swiper(self, total: int, like: int, dislike: int) -> None:
         """will swipe left and right in proportion and until the 'total' number is reached"""
 
+
+class TinderBotException(Exception):
+    def __init__(self, message: str):
+        self.message = message
+        super().__init__(message)
