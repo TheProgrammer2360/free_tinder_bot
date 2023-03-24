@@ -31,6 +31,7 @@ class TinderBot:
         login_button.click()
         # switch back to the first handle
         self.driver.switch_to.window(self.driver.window_handles[0])
+
     def __accept_cookies(self) -> None:
         """clicks the accept cookies when the notification shows up after logging in: helper method"""
         xpath = "/html/body/div[1]/div/div[2]/div/div/div[1]/div[1]/button"
@@ -71,6 +72,8 @@ class TinderBot:
         # get the login with facebook button and click it
         login_button = self.driver.find_element(By.XPATH, xpath)
         login_button.click()
+        # login on the second window
+        self.__login_with_facebook(username=username, password=password)
         time.sleep(3600)
 
     def swiper(self, total: int, like: int, dislike: int) -> None:
