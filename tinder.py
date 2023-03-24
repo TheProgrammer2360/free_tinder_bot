@@ -37,6 +37,20 @@ class TinderBot:
 
     def login(self, username: str, password: str) -> None:
         """will log in the user with using their facebook credentials"""
+        self.__accept_cookies()
+        xpath = "/html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div/div/header/div/div[2]/div[2]/a"
+        try:
+            # wait maximum of 10 seconds for the log in link to be present
+            WebDriverWait(self.driver, 10).until(
+                ec.presence_of_element_located((By.XPATH, xpath))
+            )
+        except TimeoutException:
+            # When the element is not present after the 10 seconds have passed, stop the program
+            raise TinderBotException("The login button is not found")
+        else:
+            # when the button is now present on screen, get hold of it and click it
+            login_button = self.driver.find_element(By.XPATH, xpath)
+            login_button.click()
         time.sleep(3600)
 
     def swiper(self, total: int, like: int, dislike: int) -> None:
