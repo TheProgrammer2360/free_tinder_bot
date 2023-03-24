@@ -16,9 +16,21 @@ class TinderBot:
     def __discard_notification(self) -> None:
         """discards the notifications that pop up after login: helper method"""
 
-    def __login_with_facebook(self) -> None:
-        """will click the login with facebook: helper method"""
-
+    def __login_with_facebook(self, username: str, password: str) -> None:
+        """will click the login with facebook on the second windows: helper method"""
+        # switch to the second handle
+        self.driver.switch_to.window(self.driver.window_handles[1])
+        # login using the username and password specified
+        username_area = self.driver.find_element(By.ID, "email")
+        username_area.send_keys(username)
+        password_area = self.driver.find_element(By.ID, "pass")
+        password_area.send_keys(password)
+        # wait 2 seconds and then click the login button
+        time.sleep(2)
+        login_button = self.driver.find_element(By.ID, "loginbutton")
+        login_button.click()
+        # switch back to the first handle
+        self.driver.switch_to.window(self.driver.window_handles[0])
     def __accept_cookies(self) -> None:
         """clicks the accept cookies when the notification shows up after logging in: helper method"""
         xpath = "/html/body/div[1]/div/div[2]/div/div/div[1]/div[1]/button"
