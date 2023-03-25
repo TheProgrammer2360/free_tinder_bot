@@ -2,7 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 import time
 
 
@@ -12,6 +12,23 @@ class TinderBot:
         self.driver = webdriver.Chrome(executable_path="/chromedriver.exe")
         self.driver.maximize_window()
         self.driver.get(self.URL)
+
+    def __like(self) -> None:
+        """Likes the profile that is currently showing"""
+        # xpath of the button changes between the 2
+        xpath1 = "/html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[3]/div/div[4]/button"
+        xpath2 = "/html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[4]/button"
+        # try xpath two first
+        try:
+            # use two because it seems that usually it is the one that shows up
+            like_button = self.driver.find_element(By.XPATH,xpath2)
+        except NoSuchElementException:
+            # when the button is not present
+            # try xpath1
+            like_button = self.driver.find_element(By.XPATH, xpath1)
+
+        # click the one like button that was found
+        like_button.click()
 
     def __discard_notification(self) -> None:
         """discards the notifications that pop up after login: helper method"""
@@ -110,3 +127,12 @@ class InternetErrorException(Exception):
     def __init__(self, message: str):
         self.message = message
         super().__init__(message)
+
+# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[3]/div/div[4]/button
+# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[4]/button
+# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[4]/button
+# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[4]/button
+# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[4]/button
+# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[4]/button
+# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[4]/button
+
