@@ -15,6 +15,25 @@ class TinderBot:
 
     def __discard_notification(self) -> None:
         """discards the notifications that pop up after login: helper method"""
+        xpath = "/html/body/div[2]/main/div/div/div/div[3]/button[1]"
+        try:
+            # wait for a maximum of 20 seconds for the first notification to show up
+            WebDriverWait(self.driver, 20).until(
+                ec.presence_of_element_located((By.XPATH, xpath))
+            )
+        except TimeoutException:
+            # when the 20 seconds have passed but still the notification is not there, stop the app
+            raise TinderBotException("First notification is not detected")
+        else:
+            # When the notification is now present
+            notification_response = self.driver.find_element(By.XPATH, xpath)
+            notification_response.click()
+            # wait one second for the next notification to appear
+            time.sleep(1)
+            # update the xpath with the response of the next notification
+            xpath = "/html/body/div[2]/main/div/div/div/div[3]/button[2]"
+            notification_response = self.driver.find_element(By.XPATH, xpath)
+            notification_response.click()
 
     def __login_with_facebook(self, username: str, password: str) -> None:
         """will click the login with facebook on the second windows: helper method"""
@@ -74,6 +93,7 @@ class TinderBot:
         login_button.click()
         # login on the second window
         self.__login_with_facebook(username=username, password=password)
+        self.__discard_notification()
         time.sleep(3600)
 
     def swiper(self, total: int, like: int, dislike: int) -> None:
