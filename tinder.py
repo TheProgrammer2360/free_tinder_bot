@@ -111,10 +111,24 @@ class TinderBot:
         # login on the second window
         self.__login_with_facebook(username=username, password=password)
         self.__discard_notification()
-        time.sleep(3600)
 
     def swiper(self, total: int, like: int, dislike: int) -> None:
         """will swipe left and right in proportion and until the 'total' number is reached"""
+        # wait for a maximum of 14 seconds for the like button to be present
+        xpath = "/html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[3]/div/div[4]/button"
+        try:
+            WebDriverWait(self.driver, 14).until(
+                ec.presence_of_element_located((By.XPATH, xpath))
+            )
+        except TimeoutException:
+            # end the up
+            raise InternetErrorException("Like button is still not showing")
+        else:
+            # wait two seconds to make it human like
+            time.sleep(2)
+
+        time.sleep(36000)
+
 
 
 class TinderBotException(Exception):
