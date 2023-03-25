@@ -23,7 +23,7 @@ class TinderBot:
             )
         except TimeoutException:
             # when the 20 seconds have passed but still the notification is not there, stop the app
-            raise TinderBotException("First notification is not detected")
+            raise InternetErrorException("First notification is not detected")
         else:
             # When the notification is now present
             notification_response = self.driver.find_element(By.XPATH, xpath)
@@ -101,6 +101,12 @@ class TinderBot:
 
 
 class TinderBotException(Exception):
+    def __init__(self, message: str):
+        self.message = message
+        super().__init__(message)
+
+
+class InternetErrorException(Exception):
     def __init__(self, message: str):
         self.message = message
         super().__init__(message)
