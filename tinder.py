@@ -8,6 +8,7 @@ import time
 
 class TinderBot:
     def __init__(self):
+        self.__total_swipes = 0
         self.__number_of_likes = 0
         self.__number_of_dislikes = 0
         self.URL = "https://tinder.com/"
@@ -146,6 +147,27 @@ class TinderBot:
         else:
             # wait two seconds to make it human like
             time.sleep(2)
+
+        # run the loop as long as the total number of swipes has not been reached
+        while self.__total_swipes != total:
+            for i in range(0, like):
+                if self.__total_swipes != total:
+                    self.__like()
+                    self.__total_swipes += 1
+                    time.sleep(1)
+                else:
+                    # stop the loop
+                    break
+            if self.__total_swipes != total:
+                for j in range(0, dislike):
+                    if self.__total_swipes != total:
+                        self.__dislike()
+                        self.__total_swipes += 1
+                        time.sleep(1)
+                    else:
+                        break
+
+
         time.sleep(36000)
 
 
