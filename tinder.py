@@ -163,7 +163,6 @@ class TinderBot:
             # make sure it is the right notification
             return heading.text == "Add Tinder to your Home Screen"
 
-
     def swiper(self, total: int, like: int, dislike: int) -> None:
         """will swipe left and right in proportion and until the 'total' number is reached"""
         # wait for a maximum of 14 seconds for the like button to be present
@@ -188,7 +187,14 @@ class TinderBot:
                     except ElementClickInterceptedException:
                         if self.__is_it_out_of_likes():
                             raise OutOfLikesException("Likes are finished")
-                        time.sleep(3600)
+                        elif self.__is_it_add_tinder_to_home_screen():
+                            # close notification and like
+                            close_button_xpath = "/html/body/div[2]/main/div/div[2]/button[2]"
+                            close_button = self.driver.find_element(By.XPATH, close_button_xpath)
+                            close_button.click()
+                            self.__like()
+                        else:
+                            time.sleep(3600)
                     self.__total_swipes += 1
                     time.sleep(2)
                 else:
