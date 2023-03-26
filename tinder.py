@@ -24,7 +24,7 @@ class TinderBot:
         # try xpath two first
         try:
             # use two because it seems that usually it is the one that shows up
-            like_button = self.driver.find_element(By.XPATH,xpath2)
+            like_button = self.driver.find_element(By.XPATH, xpath2)
         except NoSuchElementException:
             # when the button is not present
             # try xpath1
@@ -124,7 +124,7 @@ class TinderBot:
         xpath_two = "/html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[2]/button"
         if self.__number_of_likes == 0 and self.__number_of_dislikes == 0:
             # this run only when the has never been a swipe
-            dislike_button = self.driver.find_element(By.XPATH,xpath_one)
+            dislike_button = self.driver.find_element(By.XPATH, xpath_one)
         else:
             # this will run if this is not the first swipe
             dislike_button = self.driver.find_element(By.XPATH, xpath_two)
@@ -148,6 +148,7 @@ class TinderBot:
         else:
             # if it is found make sure it is the correct heading
             return heading.text == "You're Out of Likes!"
+
     def swiper(self, total: int, like: int, dislike: int) -> None:
         """will swipe left and right in proportion and until the 'total' number is reached"""
         # wait for a maximum of 14 seconds for the like button to be present
@@ -171,7 +172,7 @@ class TinderBot:
                         self.__like()
                     except ElementClickInterceptedException:
                         if self.__is_it_out_of_likes():
-                            print("You're Out of Likes")
+                            raise OutOfLikesException("Likes are finished")
                         time.sleep(5000)
                     self.__total_swipes += 1
                     time.sleep(2)
@@ -191,7 +192,6 @@ class TinderBot:
         time.sleep(36000)
 
 
-
 class TinderBotException(Exception):
     def __init__(self, message: str):
         self.message = message
@@ -203,7 +203,8 @@ class InternetErrorException(Exception):
         self.message = message
         super().__init__(message)
 
-# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[3]/div/div[2]/button
-# after like
-# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[2]/button
-# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[2]/button
+
+class OutOfLikesException(Exception):
+    def __init__(self, message: str):
+        self.message = message
+        super().__init__(message)
