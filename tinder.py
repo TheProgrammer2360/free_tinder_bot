@@ -133,6 +133,9 @@ class TinderBot:
         dislike_button.click()
         self.__number_of_dislikes += 1
 
+    def __str__(self):
+        return f"Likes: {self.__number_of_likes}\nDislikes: {self.__number_of_dislikes}\nTotal: {self.__total_swipes}"
+
     def swiper(self, total: int, like: int, dislike: int) -> None:
         """will swipe left and right in proportion and until the 'total' number is reached"""
         # wait for a maximum of 14 seconds for the like button to be present
@@ -166,7 +169,7 @@ class TinderBot:
                         time.sleep(1)
                     else:
                         break
-
+        print(self.__str__())
 
         time.sleep(36000)
 
