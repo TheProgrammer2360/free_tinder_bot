@@ -8,6 +8,8 @@ import time
 
 class TinderBot:
     def __init__(self):
+        self.__number_of_likes = 0
+        self.__number_of_dislikes = 0
         self.URL = "https://tinder.com/"
         self.driver = webdriver.Chrome(executable_path="/chromedriver.exe")
         self.driver.maximize_window()
@@ -29,6 +31,7 @@ class TinderBot:
 
         # click the one like button that was found
         like_button.click()
+        self.__number_of_likes += 1
 
     def __discard_notification(self) -> None:
         """discards the notifications that pop up after login: helper method"""
@@ -112,6 +115,23 @@ class TinderBot:
         self.__login_with_facebook(username=username, password=password)
         self.__discard_notification()
 
+    def __dislike(self) -> None:
+        """Likes the current profile that is currently showing"""
+        # before any swiping has been done the xpath for the dislike button is xpath_one but changes after a swipe
+        # has been made to xpath_two
+        xpath_one = "/html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[3]/div/div[2]/button"
+        xpath_two = "/html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[2]/button"
+        if self.__number_of_likes == 0 and self.__number_of_dislikes == 0:
+            # this run only when the has never been a swipe
+            dislike_button = self.driver.find_element(By.XPATH,xpath_one)
+        else:
+            # this will run if this is not the first swipe
+            dislike_button = self.driver.find_element(By.XPATH, xpath_two)
+
+        # click the button and update the number of dislike
+        dislike_button.click()
+        self.__number_of_dislikes += 1
+
     def swiper(self, total: int, like: int, dislike: int) -> None:
         """will swipe left and right in proportion and until the 'total' number is reached"""
         # wait for a maximum of 14 seconds for the like button to be present
@@ -126,7 +146,6 @@ class TinderBot:
         else:
             # wait two seconds to make it human like
             time.sleep(2)
-
         time.sleep(36000)
 
 
@@ -142,11 +161,7 @@ class InternetErrorException(Exception):
         self.message = message
         super().__init__(message)
 
-# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[3]/div/div[4]/button
-# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[4]/button
-# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[4]/button
-# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[4]/button
-# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[4]/button
-# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[4]/button
-# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[4]/button
-
+# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[3]/div/div[2]/button
+# after like
+# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[2]/button
+# /html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[2]/button
