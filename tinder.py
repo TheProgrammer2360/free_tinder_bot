@@ -2,7 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException, ElementClickInterceptedException
 import time
 
 
@@ -136,6 +136,18 @@ class TinderBot:
     def __str__(self):
         return f"Likes: {self.__number_of_likes}\nDislikes: {self.__number_of_dislikes}\nTotal: {self.__total_swipes}"
 
+    def __is_it_out_of_likes(self) -> bool:
+        """Checks if disturbance is caused by out of likes notification"""
+        xpath = "/html/body/div[2]/main/div/div[1]/div[2]/div[1]/span[1]/div/div/span/div/h3"
+        try:
+            # try getting hold of the heading
+            heading = self.driver.find_element(By.XPATH, xpath)
+        except NoSuchElementException:
+            # if the heading is not found
+            return False
+        else:
+            # if it is found make sure it is the correct heading
+            return heading.text == "You're Out of Likes!"
     def swiper(self, total: int, like: int, dislike: int) -> None:
         """will swipe left and right in proportion and until the 'total' number is reached"""
         # wait for a maximum of 14 seconds for the like button to be present
@@ -155,9 +167,14 @@ class TinderBot:
         while self.__total_swipes != total:
             for i in range(0, like):
                 if self.__total_swipes != total:
-                    self.__like()
+                    try:
+                        self.__like()
+                    except ElementClickInterceptedException:
+                        if self.__is_it_out_of_likes():
+                            print("You're Out of Likes")
+                        time.sleep(5000)
                     self.__total_swipes += 1
-                    time.sleep(1)
+                    time.sleep(2)
                 else:
                     # stop the loop
                     break
@@ -166,7 +183,7 @@ class TinderBot:
                     if self.__total_swipes != total:
                         self.__dislike()
                         self.__total_swipes += 1
-                        time.sleep(1)
+                        time.sleep(2)
                     else:
                         break
         print(self.__str__())
