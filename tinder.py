@@ -149,6 +149,21 @@ class TinderBot:
             # if it is found make sure it is the correct heading
             return heading.text == "You're Out of Likes!"
 
+
+    def __is_it_add_tinder_to_home_screen(self) -> bool:
+        """Checks to see if the notification is for add tinder to home screen"""
+        xpath = "/html/body/div[2]/main/div/div[1]/div[2]/h1"
+        try:
+            # try to get the heading
+            heading = self.driver.find_element(By.XPATH, xpath)
+        except NoSuchElementException:
+            # when the xpath finds is pointing at something not in the screen
+            return False
+        else:
+            # make sure it is the right notification
+            return heading.text == "Add Tinder to your Home Screen"
+
+
     def swiper(self, total: int, like: int, dislike: int) -> None:
         """will swipe left and right in proportion and until the 'total' number is reached"""
         # wait for a maximum of 14 seconds for the like button to be present
@@ -173,7 +188,7 @@ class TinderBot:
                     except ElementClickInterceptedException:
                         if self.__is_it_out_of_likes():
                             raise OutOfLikesException("Likes are finished")
-                        time.sleep(5000)
+                        time.sleep(3600)
                     self.__total_swipes += 1
                     time.sleep(2)
                 else:
