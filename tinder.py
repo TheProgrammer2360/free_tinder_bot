@@ -203,7 +203,16 @@ class TinderBot:
             if self.__total_swipes != total:
                 for j in range(0, dislike):
                     if self.__total_swipes != total:
-                        self.__dislike()
+                        try:
+                            # try to click the button
+                            self.__dislike()
+                        except NoSuchElementException:
+                            # when the like was not successful but we are now in dislike
+                            # decrease total likes, and liked ones
+                            self.__total_swipes -= 1
+                            self.__number_of_likes -= 1
+                            # stop the app
+                            raise OutOfLikesException("You are out of likes")
                         self.__total_swipes += 1
                         time.sleep(2)
                     else:
