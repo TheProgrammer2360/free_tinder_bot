@@ -149,7 +149,6 @@ class TinderBot:
             # if it is found make sure it is the correct heading
             return heading.text == "You're Out of Likes!"
 
-
     def __is_it_add_tinder_to_home_screen(self) -> bool:
         """Checks to see if the notification is for add tinder to home screen"""
         xpath = "/html/body/div[2]/main/div/div[1]/div[2]/h1"
@@ -179,47 +178,26 @@ class TinderBot:
             time.sleep(2)
 
         # run the loop as long as the total number of swipes has not been reached
-        while self.__total_swipes != total:
-            for i in range(0, like):
-                if self.__total_swipes != total:
-                    try:
-                        self.__like()
-                    except ElementClickInterceptedException:
-                        if self.__is_it_out_of_likes():
-                            raise OutOfLikesException("Likes are finished")
-                        elif self.__is_it_add_tinder_to_home_screen():
-                            # close notification and like
-                            close_button_xpath = "/html/body/div[2]/main/div/div[2]/button[2]"
-                            close_button = self.driver.find_element(By.XPATH, close_button_xpath)
-                            close_button.click()
-                            self.__like()
-                        else:
-                            time.sleep(3600)
-                    self.__total_swipes += 1
-                    time.sleep(2)
-                else:
-                    # stop the loop
-                    break
-            if self.__total_swipes != total:
-                for j in range(0, dislike):
-                    if self.__total_swipes != total:
-                        try:
-                            # try to click the button
-                            self.__dislike()
-                        except NoSuchElementException:
-                            # when the like was not successful but we are now in dislike
-                            # decrease total likes, and liked ones
-                            self.__total_swipes -= 1
-                            self.__number_of_likes -= 1
-                            # stop the app
-                            raise OutOfLikesException("You are out of likes")
-                        self.__total_swipes += 1
-                        time.sleep(2)
-                    else:
-                        break
-        print(self.__str__())
+
 
         time.sleep(36000)
+
+    def __dismiss_notification_while_swiping(self) -> None:
+        """dismisses the notification that is currently open"""
+        if self.__is_it_out_of_likes():
+            # stop the program
+            raise OutOfLikesException("Out of likes")
+        elif self.__is_it_add_tinder_to_home_screen():
+            # close the notification
+            close_button_xpath = "/html/body/div[2]/main/div/div[2]/button[2]"
+            close_button = self.driver.find_element(By.XPATH, close_button_xpath)
+            close_button.click()
+        # wait 1 second for it to fully close the notification
+        time.sleep(1)
+
+    def __is_there_a_notification(self) -> bool:
+        """checks to see if we do have a notification"""
+        return self.__is_it_out_of_likes() or self.__is_it_add_tinder_to_home_screen()
 
 
 class TinderBotException(Exception):
