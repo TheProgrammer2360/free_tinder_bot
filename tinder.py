@@ -180,7 +180,7 @@ class TinderBot:
         # run the loop as long as the total number of swipes has not been reached
         while self.__total_swipes != total:
             for i in range(0, like):
-                # like the present profile# increment the total number of likes
+                # like the present profile
                 try:
                     self.__like()
                     # increment the total number of likes
@@ -194,14 +194,32 @@ class TinderBot:
                 # check to see if there is a notification and dismiss it if it is there
                 time.sleep(1)
                 # check to see if there is an notification
-                if self.__is_there_a_notification:
-                    # if there is a notification dismiss it
-                    self.__dismiss_notification_while_swiping()
-                    # wait 2 seconds for the notification to disappear
-                    time.sleep(2)
+            if self.__is_there_a_notification:
+                # if there is a notification dismiss it
+                self.__dismiss_notification_while_swiping()
+                # wait 2 seconds for the notification to disappear
+                time.sleep(2)
+            if self.__total_swipes != total:
+                for j in range(0, dislike):
+                    # dislike
+                    self.__dislike()
+                    # increment the total number of swipes
+                    self.__total_swipes += 1
+                    # check if the total number is reached and if is it stop swiping
+                    if self.__total_swipes == total:
+                        break
+                    # check if there is a notification and dismiss it when it occurs
+                    time.sleep(1)
+
+                    if self.__is_there_a_notification:
+                        # if there is a notification dismiss it
+                        self.__dismiss_notification_while_swiping()
+                        # wait 2 seconds for the notification to disappear
+                        time.sleep(2)
+            time.sleep(5)
+        print(self.__str__())
 
 
-        time.sleep(36000)
 
     def __dismiss_notification_while_swiping(self) -> None:
         """dismisses the notification that is currently open"""
