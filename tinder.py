@@ -167,7 +167,7 @@ class TinderBot:
         # wait for a maximum of 14 seconds for the like button to be present
         xpath = "/html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[3]/div/div[4]/button"
         try:
-            WebDriverWait(self.__driver, 14).until(
+            WebDriverWait(self.__driver, 30).until(
                 ec.presence_of_element_located((By.XPATH, xpath))
             )
         except TimeoutException:
@@ -178,6 +178,27 @@ class TinderBot:
             time.sleep(2)
 
         # run the loop as long as the total number of swipes has not been reached
+        while self.__total_swipes != total:
+            for i in range(0, like):
+                # like the present profile# increment the total number of likes
+                try:
+                    self.__like()
+                    # increment the total number of likes
+                    self.__total_swipes += 1
+                    # if the total likes is reached stop the liking
+                    if self.__total_swipes == total:
+                        break
+                except ElementClickInterceptedException:
+                    print("Match found wait...")
+                    time.sleep(3600)
+                # check to see if there is a notification and dismiss it if it is there
+                time.sleep(1)
+                # check to see if there is an notification
+                if self.__is_there_a_notification:
+                    # if there is a notification dismiss it
+                    self.__dismiss_notification_while_swiping()
+                    # wait 2 seconds for the notification to disappear
+                    time.sleep(2)
 
 
         time.sleep(36000)
