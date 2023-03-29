@@ -12,9 +12,9 @@ class TinderBot:
         self.__number_of_likes = 0
         self.__number_of_dislikes = 0
         self.URL = "https://tinder.com/"
-        self.driver = webdriver.Chrome(executable_path="/chromedriver.exe")
-        self.driver.maximize_window()
-        self.driver.get(self.URL)
+        self.__driver = webdriver.Chrome(executable_path="/chromedriver.exe")
+        self.__driver.maximize_window()
+        self.__driver.get(self.URL)
 
     def __like(self) -> None:
         """Likes the profile that is currently showing"""
@@ -24,11 +24,11 @@ class TinderBot:
         # try xpath two first
         try:
             # use two because it seems that usually it is the one that shows up
-            like_button = self.driver.find_element(By.XPATH, xpath2)
+            like_button = self.__driver.find_element(By.XPATH, xpath2)
         except NoSuchElementException:
             # when the button is not present
             # try xpath1
-            like_button = self.driver.find_element(By.XPATH, xpath1)
+            like_button = self.__driver.find_element(By.XPATH, xpath1)
 
         # click the one like button that was found
         like_button.click()
@@ -39,7 +39,7 @@ class TinderBot:
         xpath = "/html/body/div[2]/main/div/div/div/div[3]/button[1]"
         try:
             # wait for a maximum of 20 seconds for the first notification to show up
-            WebDriverWait(self.driver, 20).until(
+            WebDriverWait(self.__driver, 20).until(
                 ec.presence_of_element_located((By.XPATH, xpath))
             )
         except TimeoutException:
@@ -47,37 +47,37 @@ class TinderBot:
             raise InternetErrorException("First notification is not detected")
         else:
             # When the notification is now present
-            notification_response = self.driver.find_element(By.XPATH, xpath)
+            notification_response = self.__driver.find_element(By.XPATH, xpath)
             notification_response.click()
             # wait one second for the next notification to appear
             time.sleep(1)
             # update the xpath with the response of the next notification
             xpath = "/html/body/div[2]/main/div/div/div/div[3]/button[2]"
-            notification_response = self.driver.find_element(By.XPATH, xpath)
+            notification_response = self.__driver.find_element(By.XPATH, xpath)
             notification_response.click()
 
     def __login_with_facebook(self, username: str, password: str) -> None:
         """will click the login with facebook on the second windows: helper method"""
         # switch to the second handle
-        self.driver.switch_to.window(self.driver.window_handles[1])
+        self.__driver.switch_to.window(self.__driver.window_handles[1])
         # login using the username and password specified
-        username_area = self.driver.find_element(By.ID, "email")
+        username_area = self.__driver.find_element(By.ID, "email")
         username_area.send_keys(username)
-        password_area = self.driver.find_element(By.ID, "pass")
+        password_area = self.__driver.find_element(By.ID, "pass")
         password_area.send_keys(password)
         # wait 2 seconds and then click the login button
         time.sleep(2)
-        login_button = self.driver.find_element(By.ID, "loginbutton")
+        login_button = self.__driver.find_element(By.ID, "loginbutton")
         login_button.click()
         # switch back to the first handle
-        self.driver.switch_to.window(self.driver.window_handles[0])
+        self.__driver.switch_to.window(self.__driver.window_handles[0])
 
     def __accept_cookies(self) -> None:
         """clicks the accept cookies when the notification shows up after logging in: helper method"""
         xpath = "/html/body/div[1]/div/div[2]/div/div/div[1]/div[1]/button"
         try:
             # wait 10 seconds for the accept button to be present
-            WebDriverWait(self.driver, 10).until(
+            WebDriverWait(self.__driver, 10).until(
                 ec.presence_of_element_located((By.XPATH, xpath))
             )
         except TimeoutException:
@@ -85,7 +85,7 @@ class TinderBot:
             raise TinderBotException("could not find the accept button")
         else:
             # when the button is present, find it and click it
-            accept_button = self.driver.find_element(By.XPATH, xpath)
+            accept_button = self.__driver.find_element(By.XPATH, xpath)
             accept_button.click()
 
     def login(self, username: str, password: str) -> None:
@@ -94,7 +94,7 @@ class TinderBot:
         xpath = "/html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div/div/header/div/div[2]/div[2]/a"
         try:
             # wait maximum of 10 seconds for the log in link to be present
-            WebDriverWait(self.driver, 10).until(
+            WebDriverWait(self.__driver, 10).until(
                 ec.presence_of_element_located((By.XPATH, xpath))
             )
         except TimeoutException:
@@ -102,7 +102,7 @@ class TinderBot:
             raise TinderBotException("The login button is not found")
         else:
             # when the button is now present on screen, get hold of it and click it
-            login_button = self.driver.find_element(By.XPATH, xpath)
+            login_button = self.__driver.find_element(By.XPATH, xpath)
             login_button.click()
 
         # xpath for the login with facebook button
@@ -110,7 +110,7 @@ class TinderBot:
         # wait for 5 seconds for the Google button to disappear and return
         time.sleep(5)
         # get the login with facebook button and click it
-        login_button = self.driver.find_element(By.XPATH, xpath)
+        login_button = self.__driver.find_element(By.XPATH, xpath)
         login_button.click()
         # login on the second window
         self.__login_with_facebook(username=username, password=password)
@@ -124,10 +124,10 @@ class TinderBot:
         xpath_two = "/html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[4]/div/div[2]/button"
         if self.__number_of_likes == 0 and self.__number_of_dislikes == 0:
             # this run only when the has never been a swipe
-            dislike_button = self.driver.find_element(By.XPATH, xpath_one)
+            dislike_button = self.__driver.find_element(By.XPATH, xpath_one)
         else:
             # this will run if this is not the first swipe
-            dislike_button = self.driver.find_element(By.XPATH, xpath_two)
+            dislike_button = self.__driver.find_element(By.XPATH, xpath_two)
 
         # click the button and update the number of dislike
         dislike_button.click()
@@ -141,7 +141,7 @@ class TinderBot:
         xpath = "/html/body/div[2]/main/div/div[1]/div[2]/div[1]/span[1]/div/div/span/div/h3"
         try:
             # try getting hold of the heading
-            heading = self.driver.find_element(By.XPATH, xpath)
+            heading = self.__driver.find_element(By.XPATH, xpath)
         except NoSuchElementException:
             # if the heading is not found
             return False
@@ -154,7 +154,7 @@ class TinderBot:
         xpath = "/html/body/div[2]/main/div/div[1]/div[2]/h1"
         try:
             # try to get the heading
-            heading = self.driver.find_element(By.XPATH, xpath)
+            heading = self.__driver.find_element(By.XPATH, xpath)
         except NoSuchElementException:
             # when the xpath finds is pointing at something not in the screen
             return False
@@ -167,7 +167,7 @@ class TinderBot:
         # wait for a maximum of 14 seconds for the like button to be present
         xpath = "/html/body/div[1]/div/div[1]/div/main/div[1]/div/div/div[1]/div[1]/div/div[3]/div/div[4]/button"
         try:
-            WebDriverWait(self.driver, 14).until(
+            WebDriverWait(self.__driver, 14).until(
                 ec.presence_of_element_located((By.XPATH, xpath))
             )
         except TimeoutException:
@@ -190,7 +190,7 @@ class TinderBot:
         elif self.__is_it_add_tinder_to_home_screen():
             # close the notification
             close_button_xpath = "/html/body/div[2]/main/div/div[2]/button[2]"
-            close_button = self.driver.find_element(By.XPATH, close_button_xpath)
+            close_button = self.__driver.find_element(By.XPATH, close_button_xpath)
             close_button.click()
         # wait 1 second for it to fully close the notification
         time.sleep(1)
