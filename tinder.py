@@ -184,16 +184,17 @@ class TinderBot:
                 self.__like()
                 # increment the total number of likes
                 self.__total_swipes += 1
-                # if the total likes is reached stop the liking
-                if self.__total_swipes == total:
-                    break
                 time.sleep(2)
                 # check to see if there is an notification
+                print(self.__is_there_a_notification())
                 if self.__is_there_a_notification:
                     # if there is a notification dismiss it
                     self.__dismiss_notification_while_swiping()
                     # wait 2 seconds for the notification to disappear
                     time.sleep(2)
+                # if the total likes is reached stop the liking
+                # if self.__total_swipes == total:
+                #     break
             if self.__total_swipes != total:
                 for j in range(0, dislike):
                     # dislike
@@ -220,6 +221,8 @@ class TinderBot:
         """dismisses the notification that is currently open"""
         if self.__is_it_out_of_likes():
             # stop the program
+            # take out the like
+            self.__number_of_likes -= 1
             raise OutOfLikesException("Out of likes")
         elif self.__is_it_add_tinder_to_home_screen():
             # close the notification
