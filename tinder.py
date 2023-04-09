@@ -181,24 +181,19 @@ class TinderBot:
         while self.__total_swipes != total:
             for i in range(0, like):
                 # like the present profile
-                try:
-                    self.__like()
-                    # increment the total number of likes
-                    self.__total_swipes += 1
-                    # if the total likes is reached stop the liking
-                    if self.__total_swipes == total:
-                        break
-                except ElementClickInterceptedException:
-                    print("Match found wait...")
-                    time.sleep(3600)
-                # check to see if there is a notification and dismiss it if it is there
-                time.sleep(1)
-                # check to see if there is an notification
-            if self.__is_there_a_notification:
-                # if there is a notification dismiss it
-                self.__dismiss_notification_while_swiping()
-                # wait 2 seconds for the notification to disappear
+                self.__like()
+                # increment the total number of likes
+                self.__total_swipes += 1
+                # if the total likes is reached stop the liking
+                if self.__total_swipes == total:
+                    break
                 time.sleep(2)
+                # check to see if there is an notification
+                if self.__is_there_a_notification:
+                    # if there is a notification dismiss it
+                    self.__dismiss_notification_while_swiping()
+                    # wait 2 seconds for the notification to disappear
+                    time.sleep(2)
             if self.__total_swipes != total:
                 for j in range(0, dislike):
                     # dislike
