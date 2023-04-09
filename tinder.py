@@ -215,14 +215,14 @@ class TinderBot:
             time.sleep(5)
         print(self.__str__())
 
-
-
     def __dismiss_notification_while_swiping(self) -> None:
         """dismisses the notification that is currently open"""
         if self.__is_it_out_of_likes():
             # stop the program
             # take out the like
             self.__number_of_likes -= 1
+            # decrement the number of total as well
+            self.__number_of_dislikes -= 1
             raise OutOfLikesException("Out of likes")
         elif self.__is_it_add_tinder_to_home_screen():
             # close the notification
