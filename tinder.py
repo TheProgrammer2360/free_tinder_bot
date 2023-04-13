@@ -149,6 +149,19 @@ class TinderBot:
             # if it is found make sure it is the correct heading
             return heading.text == "You're Out of Likes!"
 
+    def __is_it_match_found(self) -> bool:
+        """return true if the notification is result of  match found"""
+        xpath = "/html/body/div[1]/div/div[1]/div/main/div[2]/main/div/div[1]/div/div[3]/div[3]/form/textarea"
+        # try to get hold of the text area that is only available on match found notification
+        try:
+            self.__driver.find_element(By.XPATH, xpath)
+        except NoSuchElementException:
+            # if it is not found, it means it is not a match found notification
+            return False
+        else:
+            # is has been found
+            return True
+
     def __is_it_add_tinder_to_home_screen(self) -> bool:
         """Checks to see if the notification is for add tinder to home screen"""
         xpath = "/html/body/div[2]/main/div/div[1]/div[2]/h1"
@@ -253,3 +266,8 @@ class OutOfLikesException(Exception):
     def __init__(self, message: str):
         self.message = message
         super().__init__(message)
+
+# match found exit button
+# /html/body/div[1]/div/div[1]/div/main/div[2]/main/div/div[1]/div/div[4]/button
+# text area
+# /html/body/div[1]/div/div[1]/div/main/div[2]/main/div/div[1]/div/div[3]/div[3]/form/textarea
