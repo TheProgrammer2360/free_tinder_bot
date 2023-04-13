@@ -149,6 +149,7 @@ class TinderBot:
             # if it is found make sure it is the correct heading
             return heading.text == "You're Out of Likes!"
 
+
     def __is_it_match_found(self) -> bool:
         """return true if the notification is result of  match found"""
         xpath = "/html/body/div[1]/div/div[1]/div/main/div[2]/main/div/div[1]/div/div[3]/div[3]/form/textarea"
@@ -218,7 +219,7 @@ class TinderBot:
                     if self.__total_swipes == total:
                         break
                     # check if there is a notification and dismiss it when it occurs
-                    time.sleep(1)
+                    time.sleep(2)
 
                     if self.__is_there_a_notification:
                         # if there is a notification dismiss it
@@ -242,12 +243,16 @@ class TinderBot:
             close_button_xpath = "/html/body/div[2]/main/div/div[2]/button[2]"
             close_button = self.__driver.find_element(By.XPATH, close_button_xpath)
             close_button.click()
+        elif self.__is_it_match_found():
+            close_button_xpath = "/html/body/div[1]/div/div[1]/div/main/div[2]/main/div/div[1]/div/div[4]/button"
+            close_button = self.__driver.find_element(By.XPATH, close_button_xpath)
+            close_button.click()
         # wait 1 second for it to fully close the notification
         time.sleep(1)
 
     def __is_there_a_notification(self) -> bool:
         """checks to see if we do have a notification"""
-        return self.__is_it_out_of_likes() or self.__is_it_add_tinder_to_home_screen()
+        return self.__is_it_out_of_likes() or self.__is_it_add_tinder_to_home_screen() or self.__is_it_match_found()
 
 
 class TinderBotException(Exception):
